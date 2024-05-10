@@ -29,6 +29,7 @@ urlpatterns = [
     path('profile/', user_views.profile, name='profile'),
     path('logout/', user_views.user_logout, name='logout'),
     path('', include('blog.urls')),
+    #path('filter/', user_views.user_logout, name='logout'),
 ]
 
 if settings.DEBUG:
