@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import Post
+from .models import Post, Tag
 
 def home(request):
     context = {
@@ -9,12 +9,21 @@ def home(request):
     return render(request, 'blog/home.html', context)
 
 
-def tagged_posts(request, tag):
-    posts = Post.objects.filter(tags__name=tag)
-    context = {
-        'posts': posts,
-        'tag': tag  # Pass the tag to the template for display or further processing
-    }
+def search_tag(request, tag):
+    tag_obj = Tag.objects.filter(name=tag).first()
+
+    if tag_obj:
+        tagged_posts = Post.objects.filter(tags=tag_obj)
+        context = {
+            'posts': tagged_posts,
+            'tag': tag,
+        }
+    else:
+        context = {
+            'posts': [],
+            'tag': tag,
+        }
+
     return render(request, 'blog/home.html', context)
 
 

@@ -28,8 +28,7 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
     path('profile/', user_views.profile, name='profile'),
     path('logout/', user_views.user_logout, name='logout'),
-    path('', include('blog.urls')),
-    #path('filter/', user_views.user_logout, name='logout'),
+    path('blog/', include('blog.urls')),
 ]
 
 if settings.DEBUG:
