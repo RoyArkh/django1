@@ -9,5 +9,14 @@ def home(request):
     return render(request, 'blog/home.html', context)
 
 
+def tagged_posts(request, tag):
+    posts = Post.objects.filter(tags__name=tag)
+    context = {
+        'posts': posts,
+        'tag': tag  # Pass the tag to the template for display or further processing
+    }
+    return render(request, 'blog/home.html', context)
+
+
 def about(request):
     return render(request, 'blog/about.html', {'title': 'About Us'})
