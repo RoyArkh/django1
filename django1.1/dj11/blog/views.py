@@ -1,6 +1,10 @@
+from django.forms import BaseModelForm
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Post, Tag
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
+
 
 def home(request):
     context = {
@@ -9,23 +13,35 @@ def home(request):
     return render(request, 'blog/home.html', context)
 
 
-# def search_tag(request, tag):
-#     tag_obj = Tag.objects.filter(name=tag).first()
+#app/model_viewtype.html
+class PostListView(ListView):
+    model = Post
+    template_name = 'blog/home.html'
+    context_object_name = 'posts'
+    ordering = ['-date']
 
-#     if tag_obj:
-#         tagged_posts = Post.objects.filter(tags=tag_obj)
-#         context = {
-#             'posts': tagged_posts,
-#             'tag': tag,
-#         }
-#     else:
-#         context = {
-#             'posts': [],
-#             'tag': tag,
-#         }
 
-#     return render(request, 'blog/home.html', context)
+class PostDetailView(DetailView):
+    model = Post
 
+
+class PostCreateView(LoginRequiredMixin, CreateView):
+    model = Post
+    fields = ['title', 'content']
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+    
+
+class PostUpdateView(LoginRequiredMixin, UpdateView):
+    model = Post
+    fields = ['title', 'content']
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+    
 
 def about(request):
     return render(request, 'blog/about.html', {'title': 'About Us'})
